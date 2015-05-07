@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<!-- Template by html.am -->
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Web Services Tester</title>
+
+		<link rel="stylesheet" type="text/css"  href="resources/css/template.css">
+        <link rel="stylesheet" type="text/css"  href="resources/css/smart-forms.css">
+        <link rel="stylesheet" type="text/css"  href="resources/css/font-awesome.min.css">
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="resources/scripts/jquery.json-viewer.js"></script>
+        <script src="resources/scripts/webServicesTester.js"></script>
+
+        <link href="resources/css/jquery.json-viewer.css" type="text/css" rel="stylesheet" />
+
+        <style type="text/css">                
+                div.scroll {
+                    background-color: #F5ECCE;
+                    width: 100%;
+                    height: 1000px;
+                    overflow: scroll;
+                    border: 1px solid #aaa;
+                    padding: 0.5em 1.5em;
+                }
+
+                
+        </style>
+
+
+		<script type="text/javascript">
+            var ip;
+
+           $( document ).ready( function() {
+                //Get Configurations
+                readConfig();
+
+                //Set default star and end date
+                var date = new Date();
+
+                $("#startDate").val(getStartDate(date));
+                $("#endDate").val( getEndOfMonth(date));
+
+
+                //Set default suburb and city                
+                $("#select-suburbs").val("206041122");
+                $("#select-cities").val("VIC");                
+            });  
+                
+            function ExecuteRest(){
+                //Get parameters
+                var topic = $("#idTopic").val();
+                var startDate = $("#startDate").val();
+                var endDate = $("#endDate").val();
+                var suburb = $("#select-suburbs").val();                         
+                
+                
+                //Get timestamp
+                var tsStartDate =new Date(startDate).getTime();
+                var tsEndDate =new Date(endDate).getTime();
+
+                //Compare if end date is greater than start date
+                if(tsStartDate > tsEndDate)
+                {
+                    alert("End Date must be greater than Start Date.")
+                }else{
+
+                    //Get the select URL
+                    var jsonurl = "http://" + ip + "/sentimentTotals/" + topic + "/" + suburb + "/" + "/" + tsStartDate + "/" + tsEndDate ;
+                    
+                    //Display url
+                    $("#idUrlSman").empty();
+                    $("#idUrlSman").append(jsonurl);
+                    
+                    //Get Json LOCAL HOST
+                    $.getJSON(jsonurl,function(data){
+                        //Tabula el objeto
+                        //$("#idResult").val(JSON.stringify(data, null, "\t"));                                                            
+                        try {                                                                                 
+                                $('#json-renderer').jsonViewer(data);
+                                $("#json-renderer").show();
+                                $("#hideParamButton").show();
+                                $("#unhideParamButton").hide();
+                                $("#parametersSection").show();
+
+                                alert("Transaction success!");
+                                
+                        }
+                        catch (error) {
+                            alert("Cannot eval JSON: " + error);
+                        }                                        
+                    });
+
+                }                                 
+            }         
+    </script>    
+	</head>
+	<body>
+		<div id="page">
+			<header id="header" style="background-color:#3c9b39">
+
+				<div id="header-inner" >	
+					<div id="logo">
+						<h1><a href="index.html">Web Services<span>Tester</span></a></h1>						
+					</div>
+					<div id="top-nav">
+						<ul>
+							<li></li>
+							<li></li>							
+						</ul>
+					</div>
+					<div class="clr"></div>
+				</div>
+			</header>
+
+			
+			<div id="content">
+				<div id="content-inner">
+				
+					<main id="contentbar">
+						<div class="article">
+							<div class="smart-wrap">
+                                <div class="smart-forms smart-container wrap-2">
+                                
+                                    <div class="form-header header-primary">
+                                        <h4><i class="fa"></i>SENTIMENT TOTALS BY TERM</h4>
+                                    </div><!-- end .form-header section -->
+                                
+                                    
+                                    <form method="post" action="" id="form-ui">
+                                        <div class="form-body">
+                                        
+                                            
+                                            <div id="parametersSection">
+
+                                                <div class="spacer-b30">
+                                                        <div class="tagline"><span>Enter parameters </span></div><!-- .tagline -->
+                                                </div>
+
+                                                <div class="frm-row" >                                            
+                                                    
+                                                    <div class="colm colm6">
+
+                                                        <div class="section">
+                                                            <label>Topic:</label>
+                                                            <label class="field">
+                                                                <input type="text" name="idTopic" id="idTopic" class="gui-input" placeholder="E.g. Tony Abott" required>
+                                                            </label>
+                                                        </div><!-- end section -->                                                                                 
+                                                    
+                                                    </div><!-- end .colm6 section -->               
+                                                </div><!-- end .frm-row section --> 
+
+
+                                                 <div class="frm-row" >                                            
+                                                    
+                                                    <div class="colm colm6">
+                                                    
+                                                        <div class="section">
+                                                            <label>Start Date:</label>
+                                                            <label class="field">
+                                                                <input type="date" name="startDate" id="startDate" class="gui-input" placeholder ="Enter a Start Date" required>
+                                                            </label>
+                                                        </div><!-- end section -->                                                                                 
+                                                    
+                                                    </div><!-- end .colm6 section -->
+                                                                       
+                                                    <div class="colm colm6">
+                                                    
+                                                        <div class="section">
+                                                            <label>End Date:</label>
+                                                            <label class="field">
+                                                                <input type="date" name="endDate" id="endDate" class="gui-input" placeholder ="Enter a End Date">
+                                                            </label required>
+                                                        </div><!-- end section --> 
+                                                                                
+                                                    </div><!-- end .colm6 section -->  
+                                                
+                                                </div><!-- end .frm-row section --> 
+                                                
+
+                                                <div class="frm-row" >                                            
+                                                    <div class="section colm colm6">
+                                                        <label>City:</label>
+                                                        <label class="field select">
+                                                            <select id="select-cities">
+                                                                <option value="all" disabled="" selected="" style="display:none;">Main Cities</option>
+                                                                <option value="NSW">Sydney</option>
+                                                                <option value="NT">Darwin</option>
+                                                                <option value="QLD">Brisbane</option>
+                                                                <option value="SA">Adelaide</option>
+                                                                <option value="TAS">Hobart</option>
+                                                                <option value="VIC">Melbourne</option>
+                                                                <option value="WA">Perth</option>
+                                                            </select>
+
+                                                            <i class="arrow">
+                                                            </i>                    
+                                                        </label>  
+                                                    </div>
+
+                                                    <div class="section colm colm6">
+                                                        <label>Suburb:</label>
+                                                        <label class="field select">
+                                                            <select  id="select-suburbs">
+                                                                <option value="all" disabled="" selected="" style="display:none;">Select a Suburb</option>
+                                                                <option value="206071139">Abbotsford</option>
+                                                                <option value="206051128">Albert Park</option>
+                                                                <option value="206021110">Alphington - Fairfield</option>
+                                                                <option value="206061135">Armadale</option><option value="206031113">Ascot Vale</option><option value="207011146">Ashburton (Vic.)</option><option value="208031183">Aspendale Gardens - Waterways</option><option value="207011147">Balwyn</option><option value="207011148">Balwyn North</option><option value="208011168">Beaumaris</option><option value="208021174">Bentleigh - McKinnon</option><option value="208021175">Bentleigh East</option><option value="207031161">Blackburn</option><option value="207031162">Blackburn South</option><option value="207031163">Box Hill</option><option value="207031164">Box Hill North</option><option value="208031184">Braeside</option><option value="208011169">Brighton (Vic.)</option><option value="208011170">Brighton East</option><option value="206011105">Brunswick</option><option value="206011106">Brunswick East</option><option value="206011107">Brunswick West</option><option value="207021156">Bulleen</option><option value="207031165">Burwood</option><option value="207031166">Burwood East</option><option value="207011149">Camberwell</option><option value="206041117">Carlton</option><option value="206071140">Carlton North - Princes Hill</option><option value="208021176">Carnegie</option><option value="208031185">Carrum - Patterson Lakes</option><option value="208021177">Caulfield - North</option><option value="208021178">Caulfield - South</option><option value="208031186">Chelsea - Bonbeach</option><option value="208031187">Chelsea Heights</option><option value="208031188">Cheltenham - Highett (East)</option><option value="208011171">Cheltenham - Highett (West)</option><option value="206011108">Coburg</option><option value="206071141">Collingwood</option><option value="206041118">Docklands</option><option value="207021157">Doncaster</option><option value="207021158">Doncaster East</option><option value="206041119">East Melbourne</option><option value="208031189">Edithvale - Aspendale</option><option value="208021179">Elsternwick</option><option value="206051129">Elwood</option><option value="206031114">Essendon - Aberfeldie</option><option value="206071142">Fitzroy</option><option value="206071143">Fitzroy North</option><option value="206031115">Flemington</option><option value="206041120">Flemington Racecourse</option><option value="207011150">Glen Iris - East</option><option value="208011172">Hampton</option><option value="207011151">Hawthorn</option><option value="207011152">Hawthorn East</option><option value="208021180">Hughesdale</option><option value="206041121">Kensington</option><option value="207011153">Kew</option><option value="207011154">Kew East</option><option value="208041194">Malvern - Glen Iris</option><option value="208041195">Malvern East</option><option value="206041122">Melbourne</option><option value="208031190">Mentone</option><option value="206031116">Moonee Ponds</option><option value="208031191">Moorabbin - Heatherton</option><option value="208031192">Moorabbin Airport</option><option value="208031193">Mordialloc - Parkdale</option><option value="208021181">Murrumbeena</option><option value="206041123">North Melbourne</option><option value="206021111">Northcote</option><option value="208021182">Ormond - Glen Huntly</option><option value="206041124">Parkville</option><option value="206011109">Pascoe Vale South</option><option value="206051130">Port Melbourne</option><option value="206051131">Port Melbourne Industrial</option><option value="206061136">Prahran - Windsor</option><option value="206071144">Richmond (Vic.)</option><option value="208011173">Sandringham - Black Rock</option><option value="206051132">South Melbourne</option><option value="206061137">South Yarra - East</option><option value="206041125">South Yarra - West</option><option value="206041126">Southbank</option><option value="206051133">St Kilda</option><option value="206051134">St Kilda East</option><option value="207031167">Surrey Hills (East) - Mont Albert</option><option value="207011155">Surrey Hills (West) - Canterbury</option><option value="207021159">Templestowe</option><option value="207021160">Templestowe Lower</option><option value="206021112">Thornbury</option><option value="206061138">Toorak</option><option value="206041127">West Melbourne</option><option value="206071145">Yarra - North</option>
+                                                            </select>
+                                                            <i class="arrow"></i>                    
+                                                        </label>  
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="section button-list">                                    
+                                                <a href="javascript:ExecuteRest();" class="button pushed btn-primary btn-rounded">Execute Service</a>
+                                                <a href="javascript:hideParameters();" class="button pushed btn-primary btn-rounded" style="display:none" id="hideParamButton">Hide parameters</a>
+                                                <a href="javascript:unhideParameters();" class="button pushed btn-primary btn-rounded" style="display:none" id="unhideParamButton">Unhide parameters</a>
+                                            </div><!-- end  section -->                    
+                                                    
+                                            <span class="input-hint"> 
+                                                <strong>URL:</strong>
+                                                <span id ="idUrlSman">
+                                                </span>                                                                                            
+                                            </span>
+                                            </span>                                                                      
+                                            <div id="json-renderer" class="scroll" style="display:none"></div>
+                                            
+                                            <!-- FER-->                                    
+                                    </form>
+                                    
+                                </div><!-- end .smart-forms section -->
+                            </div><!-- end .smart-wrap section -->
+                            
+                            <div></div><!-- end section -->
+						</div>
+					</main>
+					
+					<nav id="sidebar">
+						<div class="widget">
+							<h3>Options</h3>
+							<ul>
+								<li><a href="Rest1.html">&nbsp;Geo Search</a></li>
+								<li><a href="Rest2.html">Sentiment Analysis</a></li>
+                                <li><a href="Rest3.html">&nbsp;Top List</a></li>
+                                <li><img src="resources/images/tick.png" alt="Selected" style="width:15px;height:15px"><a href="Rest4.html">&nbsp;Sentiment totals by term</a></li>
+							</ul>
+						</div>
+
+                        <div class="widget">                                                        
+                            <div class="smart-forms smart-container wrap-2" style="padding: 10px 10px 10px 10px">
+                                <h3>Description</h3>
+                                This service is used to search tweets
+                            </div>                            
+                        </div>
+
+					</nav>                    
+					
+					<div class="clr"></div>
+				</div>
+			</div>
+		
+			
+			<footer id="footer">
+				<div id="footer-inner">
+					
+				</div>
+			</footer>
+		</div>
+	</body>
+</html>
