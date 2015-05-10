@@ -11,38 +11,50 @@
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>        
         <script src="resources/scripts/jquery.json-viewer.js"></script>        
-
+        <script src="resources/scripts/webServicesTester.js"></script>
+        
         <link href="resources/css/jquery.json-viewer.css" type="text/css" rel="stylesheet" />
-		
-		<style type="text/css">                
-			div.scroll {
-				background-color: #F5ECCE;
-				width: 100%;
-				height: 1000px;
-				overflow: scroll;
-				border: 1px solid #aaa;
-				padding: 0.5em 1.5em;
-			}
+
+        <style type="text/css">                
+                div.scroll {
+                    background-color: #F5ECCE;
+                    width: 100%;
+                    height: 1000px;
+                    overflow: scroll;
+                    border: 1px solid #aaa;
+                    padding: 0.5em 1.5em;
+                }
+
                 
         </style>
-		
+
 		<script type="text/javascript">
 
-        
-        function EvaluateSentiment(){
-            //Get parameters
-            var input = $("#idTopic").val();
+            var ip;
+
+           $( document ).ready( function() {
+                //Get Configurations
+                readConfig();
+            }); 
+
             
+        
+        function ExecuteRest(){
+            $("#json-renderer").hide();
+            
+            //Get parameters
+            var input = $("#idTopic").val();            
 
             //Build the url
-            var url = "http://115.146.87.52/api/v1/sentiment/" + input;            
+            var url = "http://" + ip + "/sentimentAnalysis/" + input;            
 
             //Draw the url
             $("#idUrlSman").empty();
             $("#idUrlSman").append(url);
 
-            url = 'resources/json/jsonFile2.json'; //URL INSIDE LOCAL HOST
+            //url = 'resources/json/jsonFile2.json'; //URL INSIDE LOCAL HOST
 
+            
             //Evaluate the sentiment
             $.getJSON(url, function(data){
                 console.log(data);
@@ -70,7 +82,8 @@
                 catch (error) {
                     alert("Cannot eval JSON: " + error);
                 }
-            });                                                
+            });
+
         }         
     </script>    
 	</head>
@@ -106,7 +119,7 @@
                                     </div><!-- end .form-header section -->
                                 
                                     
-                                    <form method="post" action="" id="form-ui">
+                                    <form method="post" action="javascript:ExecuteRest()" id="form-ui">
                                         <div class="form-body">
                                         
                                             
@@ -126,8 +139,8 @@
                                                     </div>
 
                                                     <div class="section button-list">                                    
-                                                        <a href="javascript:EvaluateSentiment();" class="button pushed btn-primary btn-rounded">Execute Service</a>
-                                                
+                                                        <input type="submit" value="Execute Service" class="button pushed btn-primary btn-rounded">
+                                                        
                                                     </div><!-- end .frm-row section --> 
 
                                                     <span class="input-hint"> 
@@ -161,14 +174,15 @@
 								<li><img src="resources/images/tick.png" alt="Selected" style="width:15px;height:15px"><a href="Rest2.html">&nbsp;Sentiment Analysis</a></li>	
                                 <li><a href="Rest3.html">&nbsp;Top List</a></li>
                                 <li><a href="Rest4.html">&nbsp;Sentiment totals by term</a></li>
-
+                                <li><a href="Rest5.html">&nbsp;Top list trending by city</a></li>                                               
 							</ul>
 						</div>
 
                         <div class="widget">                                                        
                             <div class="smart-forms smart-container wrap-2" style="padding: 10px 10px 10px 10px">
                                 <h3>Description</h3>
-                               <p>This service make a sentiment analysis.</p>
+                               <p>Perform sentiment analysis on the text entered.</p>
+                               <i>Result</i><br><br>
                                     <b>Blue:</b> Positive
                                     <br><b>Red:</b> Negative
                                     <br><b>Green:</b> Neutral

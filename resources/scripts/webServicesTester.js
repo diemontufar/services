@@ -12,7 +12,12 @@ function readConfig(){
 		console.log(ip + " IP JAVA SCRIPT in");        
     }
                     
-    });            	
+    }); 
+
+    $("#select-cities" ).change(function() {
+                console.log("Get Suburbs");
+                populateListOfSuburbs($('#select-cities :selected').val());                
+                });           	
 }
 
 function hideParameters(){
@@ -46,4 +51,38 @@ function getStartDate(date){
 	
 	return startDateFormat;
 }
+
+/* Populate suburbs list and other modules when selecting a city on the list box */
+
+
+
+function populateListOfSuburbs (state){
+
+  $('#select-suburbs').empty();
+
+  $.getJSON("http://" + ip + "/culturesByState/"+ state).done(function(data) {
+
+    if (data !== null && data!==undefined){
+
+       var suburbs_options_html =  '<option value="all" disabled selected style="display:none;">Select a Suburb</option>';      
+
+       $.each(data.features, function(fea, feature) {
+
+          suburbs_options_html = suburbs_options_html + '<option value="' + feature.properties.feature_code + '">' + feature.properties.feature_name + '</option>';
+
+       });
+            
+       // Append html string to suburb option list
+      $('#select-suburbs').append(suburbs_options_html);
+
+    }
+  }).fail(function(){
+
+    var city = $('#select-cities :selected').text();
+    console.log('No suburbs found in: ' + city );
+  });
+
+}
+
+
 

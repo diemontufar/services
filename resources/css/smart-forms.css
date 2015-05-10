@@ -773,11 +773,15 @@ html, body {
 }
 
 .smart-forms .button-list .button {
-	margin-bottom: 5px
+	margin-bottom: 5px;	
+}
+
+input.button.pushed.btn-primary.btn-rounded {
+    border-radius: 22px;
 }
 
 .smart-forms .btn-primary {
-	background-color: #4ebd4a
+	background-color: #4ebd4a;	
 }
 
 .smart-forms .btn-primary:hover, .smart-forms .btn-primary:focus {
@@ -2625,4 +2629,8 @@ to {
 	.smart-forms .align-right {
 		text-align: left
 	}
+}
+
+b {
+  font-size: 12px;
 }

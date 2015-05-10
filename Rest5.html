@@ -23,9 +23,7 @@
                     overflow: scroll;
                     border: 1px solid #aaa;
                     padding: 0.5em 1.5em;
-                }
-
-                
+                }                
         </style>
 
 
@@ -40,17 +38,20 @@
                 $("#startDate").val(getStartDate(date));
                 $("#endDate").val( getEndOfMonth(date));
 
+                //Set top
+                $("#idTop").val(5);
+                $("#idTopList").val("entities.hashtags.text"); 
 
                 //Get Configurations
-                readConfig();
+                readConfig();                             
             });  
                 
             function ExecuteRest(){
                 //Get parameters
-                var topic = $("#idTopic").val();
+                var top = $("#idTop").val();
                 var startDate = $("#startDate").val();
                 var endDate = $("#endDate").val();
-                var suburb = $("#select-suburbs").val();                         
+                var field = $("#idTopList").val();
                 
                 
                 //Get timestamp
@@ -62,11 +63,10 @@
                 {
                     alert("End Date must be greater than Start Date.")
                 }else{
-
                     $("#json-renderer").hide();
 
                     //Get the select URL
-                    var jsonurl = "http://" + ip + "/sentimentTotals/" + topic + "/" + suburb + "/"  + tsStartDate + "/" + tsEndDate ;
+                    var jsonurl = "http://" + ip + "/topListByCity/" + field + "/" + top + "/"  + tsStartDate + "/" + tsEndDate ;
                     
                     //Display url
                     $("#idUrlSman").empty();
@@ -81,7 +81,7 @@
                                 $("#json-renderer").show();
                                 $("#hideParamButton").show();
                                 $("#unhideParamButton").hide();
-                                $("#parametersSection").show();
+                                $("#parametersSection").show();                                
                         }
                         catch (error) {
                             alert("Cannot eval JSON: " + error);
@@ -120,7 +120,7 @@
                                 <div class="smart-forms smart-container wrap-2">
                                 
                                     <div class="form-header header-primary">
-                                        <h4><i class="fa"></i>SENTIMENT TOTALS BY TERM</h4>
+                                        <h4><i class="fa"></i>TOP LIST TRENDING BY MAIN CITIES</h4>
                                     </div><!-- end .form-header section -->
                                 
                                     
@@ -134,22 +134,41 @@
                                                         <div class="tagline"><span>Enter parameters </span></div><!-- .tagline -->
                                                 </div>
 
+
                                                 <div class="frm-row" >                                            
                                                     
-                                                    <div class="colm colm6">
-
+                                                     <div class="colm colm6">
+                                                    
                                                         <div class="section">
-                                                            <label>Topic:</label>
+                                                            <label>Field:</label>
+                                                            <label class="field select">
+                                                                <select id="idTopList">
+                                                                <option value="all" disabled="" selected="" style="display:none;">Field</option>
+                                                                <option value="user.screen_name">User Name</option>
+                                                                <option value="entities.hashtags.text">Trends</option>
+                                                            </select>
+
+                                                            <i class="arrow">
+                                                            </i>                    
+                                                            </label>
+                                                        </div><!-- end section -->                                             
+                                                    </div>
+
+                                                     <div class="colm colm6">
+                                                    
+                                                        <div class="section">
+                                                            <label>Top:</label>
                                                             <label class="field">
-                                                                <input type="text" name="idTopic" id="idTopic" class="gui-input" placeholder="E.g. Tony Abott" required>
+                                                                <input type="number" name="idTop" id="idTop" class="gui-input" min="0" placeholder="E.g. 5" required>
                                                             </label>
                                                         </div><!-- end section -->                                                                                 
                                                     
-                                                    </div><!-- end .colm6 section -->               
-                                                </div><!-- end .frm-row section --> 
+                                                    </div><!-- end .colm6 section -->
+                                                
+                                                </div>
 
 
-                                                 <div class="frm-row" >                                            
+                                                <div class="frm-row" >                                            
                                                     
                                                     <div class="colm colm6">
                                                     
@@ -175,38 +194,7 @@
                                                 
                                                 </div><!-- end .frm-row section --> 
                                                 
-
-                                                <div class="frm-row" >                                            
-                                                    <div class="section colm colm6">
-                                                        <label>City:</label>
-                                                        <label class="field select">
-                                                            <select id="select-cities">
-                                                                <option value="all" disabled="" selected="" style="display:none;">Main Cities</option>
-                                                                <option value="NSW">Sydney</option>
-                                                                <option value="NT">Darwin</option>
-                                                                <option value="QLD">Brisbane</option>
-                                                                <option value="SA">Adelaide</option>
-                                                                <option value="TAS">Hobart</option>
-                                                                <option value="VIC">Melbourne</option>
-                                                                <option value="WA">Perth</option>
-                                                            </select>
-
-                                                            <i class="arrow">
-                                                            </i>                    
-                                                        </label>  
-                                                    </div>
-
-                                                    <div class="section colm colm6">
-                                                        <label>Suburb:</label>
-                                                        <label class="field select">
-                                                            <select  id="select-suburbs">
-                                                                
-                                                            </select>
-                                                            <i class="arrow"></i>                    
-                                                        </label>  
-                                                    </div>
-
-                                                </div>
+                                                
                                             </div>
 
                                             <div class="section button-list">                                    
@@ -241,22 +229,21 @@
 								<li><a href="Rest1.html">&nbsp;Geo Search</a></li>
 								<li><a href="Rest2.html">Sentiment Analysis</a></li>
                                 <li><a href="Rest3.html">&nbsp;Top List</a></li>
-                                <li><img src="resources/images/tick.png" alt="Selected" style="width:15px;height:15px"><a href="Rest4.html">&nbsp;Sentiment totals by term</a></li>
-                                <li><a href="Rest5.html">&nbsp;Top list trending by city</a></li>               
-                                
+                                <li><a href="Rest4.html">&nbsp;Sentiment totals by term</a></li>
+                                <li><img src="resources/images/tick.png" alt="Selected" style="width:15px;height:15px"><a href="Rest5.html">&nbsp;Top list trending by city</a></li>
 							</ul>
 						</div>
 
                         <div class="widget">                                                        
                             <div class="smart-forms smart-container wrap-2" style="padding: 10px 10px 10px 10px">
                                  <h3>Description</h3>
-                                Returns a count of sentiment totals, based on a topic within the geographical polygon defined by the selected suburb:<br><br>
+                                Returns a top list of trends or users by main city in a period of time:<br><br>
                                 <I>Parameters Definition:</I><br><br>
-                                    <b>Topic: </b>A text you want to search for<br>                                    
+                                    <b>Field: </b>Option, Trends or User Name<br>
+                                    <b>Top: </b>Number of the top list<br>
                                     <b>Start Date: </b>Date Range, Start Date<br>
-                                    <b>End Date: </b>Date Range, End Date<br>
-                                    <b>City: </b>City of interest<br>
-                                    <b>Suburb: </b>Suburb of interest</br>                            
+                                    <b>End Date: </b>Date Range, End Date<br>                                    
+                                
                             </div>                            
                         </div>
 
